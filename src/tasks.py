@@ -23,6 +23,8 @@ def load_tasks(file_path=DEFAULT_TASKS_FILE):
     except json.JSONDecodeError:
         # Handle corrupted JSON file
         print(f"Warning: {file_path} contains invalid JSON. Creating new tasks list.")
+        with open(file_path, "w") as f:
+            json.dump([], f, indent=2) # Create an empty tasks list
         return []
 
 def save_tasks(tasks, file_path=DEFAULT_TASKS_FILE):
@@ -123,3 +125,13 @@ def get_overdue_tasks(tasks):
         if not task.get("completed", False) and 
            task.get("due_date", "") < today
     ]
+
+def mark_task_as_important(task):
+    task["important"] = True
+    return task
+
+def count_completed_tasks(tasks):
+    return sum(1 for task in tasks if task.get("completed", False))
+
+def clear_completed_tasks(tasks):
+    return [task for task in tasks if not task.get("completed", False)]
